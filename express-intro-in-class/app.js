@@ -82,44 +82,29 @@ app.post("/team/add-players/:teamID", function (req, res) {
     //     "playersArray": ["kobe", "shaq"]
     // },
 
-    console.log('TeamArray-1: ',teamArray)
-    console.log('Req.params: ',req.params)
+    // EXAMPLE ------------------------------
+    // let resultPlayerArray = [{player: 'kobe'}, {player: 'kobe'}, {player:"shaq"}].map(item => {
+    //     return item.player
+    //   })
+    //   let finalResult = resultPlayerArray.filter((player, index, collection) => {
+    //     return collection.indexOf(player) === index;
+    //   })
+    //   console.log(finalResult)
+    // ---------------------------------------
 
     let teamIDNumber = Number(req.params.teamID);
 
-    // var a = [];
-    // for (var i=0; i < teamArray.length; i++)
-    //     if (a.indexOf(teamArray[i]) === -1 && teamArray[i] !== '')
-    //         a.push(teamArray[i]);
-    //         console.log('a: ',a)
-    // return a;
-
-    teamArray.forEach(element => {
-        console.log('Element-1: ',element)
-        if(element.id === teamIDNumber){
-            element.playersArray.push(req.body);
-        } 
-        for(const [player, name] of Object.entries(element.playersArray[0])){
-            const reqBodyValue = String(Object.values(req.body));
-            if (name === element.playersArray[0]) {
-                console.log('Result: ', name)
-            }
+    teamArray.forEach((team) => {
+        if (team.id === teamIDNumber) {
+            let singleTeamArray = team.playersArray;
+            singleTeamArray.forEach((player) => {
+                if (player.player === req.body.player) {
+                    res.status(404).send("Sorry this player already exist!")
+                }
+            });
         }
-        // if (Object.values(element.playersArray[0]) === -1 && element !== '') {
-        //     return res.status(404).send("Player already exist")
-        // }
-        // const objectEntries = Object.entries(element.playersArray[1])
-        // console.log('Object.entries ', objectEntries[0])
-
-        console.log('Req.bodyValue: ', Object.values(req.body))
-        console.log('Req.body: ', req.body)
-        console.log('Element-2: ',element)
-        console.log('Element.playersArray-1: ', element.playersArray[0])
-        console.log('Element.playersArray-2: ',Object.entries(element.playersArray[0]))
-        const objEnt = Object.values(Object.entries(element.playersArray[0]))
-        console.log('last: ', objEnt)
+        team.playersArray.push(req.body);
     });
-    console.log('TeamArray-2: ',teamArray)
     res.status(200).json({
         teamArray,
     });
