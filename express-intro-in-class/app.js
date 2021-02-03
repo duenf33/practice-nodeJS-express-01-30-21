@@ -234,21 +234,34 @@ app.delete('/team/delete-player-by-name/:teamID', function(req, res){
             teamIndex = indexTeam;
             let singleTeamArray = team.playersArray;
 
-            console.log(team.playersArray)
+            console.log('Line 237: ', team.playersArray)
             singleTeamArray.forEach((item, indexPlayer) => {
-                console.log('Line XXX: ', indexPlayer)
+                console.log('-------------')
+                console.log('Line 240: ', indexPlayer)
+                console.log('-------------')
+                console.log('Line 242: ', team.playersArray)
                 if (item.player === req.body.player) {
-                    // console.log(item.player)
-                    console.log('Line 241 ', req.body.player)
-                    console.log('Line 242 ', item)
-                    console.log('Line 243 ', req.body)
+                    console.log('Line 244 ', item.player)
+                    console.log('Line 245 ', req.body.player)
+                    console.log('Line 246 ', item)
+                    console.log('Line 247 ', req.body)
                     obj = { ...item, ...req.body };
                     playerIndex = indexPlayer;
-                    console.log('Line 246: ', playerIndex)
-                };
+                    return delete obj.player;
+                    console.log('Line 250: ', playerIndex)
+                    console.log('Line 251: ', indexPlayer)
+                    console.log('Line 252: ', obj)
+                } else if(teamArray[teamIndex].playersArray[playerIndex] === undefined){
+                    return res.send('no more players to delete.')
+                } else {
+                    return teamArray
+                }
             });
         };
     });
+    console.log('line 257: ', teamArray[teamIndex])
+    console.log('Line 258: ', teamArray[teamIndex].playersArray[playerIndex])
+    teamArray[teamIndex].playersArray[playerIndex] = obj;
     res.send(teamArray);
 })
 
