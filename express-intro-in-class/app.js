@@ -32,10 +32,10 @@ app.get('/', function(req, res) {
 });
 
 app.get("/team", function (req, res) {
-    console.log(req.query);
+    // console.log(req.query);
     res.status(200).json({
         teamArray,
-        query: req.query,
+        // query: req.query,
     });
 });
 
@@ -87,6 +87,9 @@ app.post('/team', function (req, res) {
     });
 });
 
+/*******************************************************************************************
+ * THIS IS ONE SOLUTION FOR THIS POST. THE OTHER SOLUTION IS AFTER THIS COMMENTED APP.POST *
+ *******************************************************************************************/
 // app.post("/team/add-players/:teamID", function (req, res) {
 //     console.log('---------------------------------------')
 //     //match the teamID if the ID matches
@@ -132,45 +135,45 @@ app.post("/team/add-players/:teamID", function (req, res) {
     let targetTeam;
     let teamIndex;
     teamArray.forEach((team, index) => {
-      if (team.id === teamIDNumber) {
+        if (team.id === teamIDNumber) {
         let singleTeamArray = team.playersArray;
         singleTeamArray.push(req.body);
         targetTeam = team;
         teamIndex = index;
         return;
-      }
+        }
     });
     //console.log(JSON.stringify(teamArray));
-    //set the playersARray to targetTeamArray
+    //set the playersArray to targetTeamArray
     let targetTeamArray = targetTeam.playersArray;
     //return only players array
     let playersNameArray = targetTeamArray.map(function (item) {
-      return item.player;
+        return item.player;
     });
     //using some to check the array and using indexOf to compare, and if it exists return true
     let isDuplicate = playersNameArray.some(function (item, index) {
-      return playersNameArray.indexOf(item) != index;
+        return playersNameArray.indexOf(item) != index;
     });
     //if is true, we set a message for the user to see
     if (isDuplicate) {
-      message = "Sorry, player already exist!";
+        message = "Sorry, player already exist!";
     }
     //we filter player the duplicate using Map Filter and IndexOf
     let results = targetTeamArray
-      .map((item) => item.player)
-      .filter(function (player, index, collection) {
+        .map((item) => item.player)
+        .filter(function (player, index, collection) {
         return collection.indexOf(player) == index;
-      });
+        });
     //once we grab the array we push it to the object
     let resultObj = [];
     results.forEach((item, index) => {
-      resultObj.push({ player: item });
+        resultObj.push({ player: item });
     });
     //set playersArray
     teamArray[teamIndex].playersArray = resultObj;
     res.status(200).json({
-      teamArray,
-      message,
+        teamArray,
+        message,
     });
 });
 
@@ -181,7 +184,7 @@ app.put("/team/edit-players/:teamID", function (req, res) {
     let teamIndex;
     let playerIndex;
 
-    // THIS IS USING req.query: -------------
+    // --------THIS IS USING req.query: -------------
     teamArray.forEach((team, indexTeam) => {
         if(team.id === teamIDNumber) {
             teamIndex = indexTeam;
@@ -196,7 +199,7 @@ app.put("/team/edit-players/:teamID", function (req, res) {
         }
     });
 
-    // THIS IS USING req.body: -------------
+    // --------THIS IS USING req.body: -------------
     // teamArray.forEach((team, indexTeam) => {
     //     if(team.id === teamIDNumber) {
     //         teamIndex = indexTeam;
@@ -210,14 +213,42 @@ app.put("/team/edit-players/:teamID", function (req, res) {
     //         })
     //     }
     // });
-
+    console.log('line 216: ', teamArray[teamIndex])
+    console.log('Line 217: ', teamArray[teamIndex].playersArray[playerIndex])
     teamArray[teamIndex].playersArray[playerIndex] = obj;
     res.json(teamArray);
 })
 
 app.delete('/team/delete-player-by-name/:teamID', function(req, res){
+    let teamIDNumber = Number(req.params.teamID);
+    let obj = {};
+    let teamIndex;
+    let playerIndex;
 
+    // console.log(req.params.teamID)
+    // console.log(teamIDNumber)
+    // console.log(req.body);
     
+    teamArray.forEach((team, indexTeam) => {
+        if(team.id === teamIDNumber) {
+            teamIndex = indexTeam;
+            let singleTeamArray = team.playersArray;
+
+            console.log(team.playersArray)
+            singleTeamArray.forEach((item, indexPlayer) => {
+                console.log('Line XXX: ', indexPlayer)
+                if (item.player === req.body.player) {
+                    // console.log(item.player)
+                    console.log('Line 241 ', req.body.player)
+                    console.log('Line 242 ', item)
+                    console.log('Line 243 ', req.body)
+                    obj = { ...item, ...req.body };
+                    playerIndex = indexPlayer;
+                    console.log('Line 246: ', playerIndex)
+                };
+            });
+        };
+    });
     res.send(teamArray);
 })
 
